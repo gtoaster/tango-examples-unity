@@ -387,7 +387,14 @@ public class TangoDynamicMesh : MonoBehaviour, ITango3DReconstruction
             int[] triangles = mesh.triangles;
             for (int j = 0; j < triangles.Length; j += 3)
             {
-                sb.Append(string.Format("f {0}/{0}/{0} {1}/{1}/{1} {2}/{2}/{2}\n", triangles[j + 2] + 1 + startVertex, triangles[j + 1] + 1 + startVertex, triangles[j] + 1 + startVertex));
+                int v1 = triangles[j + 2] + 1 + startVertex;
+                int v2 = triangles[j + 1] + 1 + startVertex;
+                int v3 = triangles[j] + 1 + startVertex;
+
+                // filter out single vertex index triangles, causes Maya to not be able to import mesh.
+                if (!(v1 == v2 && v2 == v3)) {
+                    sb.Append(string.Format("f {0}/{0}/{0} {1}/{1}/{1} {2}/{2}/{2}\n", v1, v2, v3));
+                }
             }
 
             sb.Append("\n");
